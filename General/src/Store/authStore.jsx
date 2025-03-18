@@ -3,14 +3,14 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import Toastify styles
 
-const API_URL = "http://localhost:5000/auth";
+const API_URL = import.meta.env.VITE_API_URL
 
 const useAuthStore = create((set) => ({
   user: JSON.parse(localStorage.getItem("user")) || null,
 
   login: async (email, password) => {
     try {
-      const res = await axios.post(`${API_URL}/login`, { email, password }, { withCredentials: true });
+      const res = await axios.post(`${API_URL}/auth/login`, { email, password }, { withCredentials: true });
       localStorage.setItem("user", JSON.stringify(res.data.user));
       set({ user: res.data.user });
 
@@ -25,7 +25,7 @@ const useAuthStore = create((set) => ({
 
   signup: async (name, email, password) => {
     try {
-      const res = await axios.post(`${API_URL}/register`, { name, email, password });
+      const res = await axios.post(`${API_URL}/auth/register`, { name, email, password });
       
       toast.success("Account created successfully! 🎉"); // ✅ Success Toast
       
@@ -38,7 +38,7 @@ const useAuthStore = create((set) => ({
 
   getProfile: async () => {
     try {
-      const res = await axios.get(`${API_URL}/profile`, { withCredentials: true });
+      const res = await axios.get(`${API_URL}/auth/profile`, { withCredentials: true });
       set({ user: res.data });
     } catch (err) {
       toast.error("Failed to fetch profile! ❌");
@@ -47,7 +47,7 @@ const useAuthStore = create((set) => ({
 
   logout: async () => {
     try {
-      await axios.post(`${API_URL}/logout`, {}, { withCredentials: true });
+      await axios.post(`${API_URL}/auth/logout`, {}, { withCredentials: true });
       localStorage.removeItem("user");
       set({ user: null });
 

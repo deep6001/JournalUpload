@@ -14,10 +14,12 @@ const Home = () => {
     fetchCurrentIssue();
   }, []);
 
+  const API_URL = import.meta.env.VITE_API_URL
+
   // 🔹 Fetch Current Issue from Backend
   const fetchCurrentIssue = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/files");
+      const res = await axios.get(`${API_URL}/api/files`);
       setCurrentIssue(res.data);
     } catch (err) {
       setError("Failed to load the current issue.");

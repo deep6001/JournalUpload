@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,11 +11,13 @@ const UserManagement = () => {
   useEffect(() => {
     fetchUsers();
   }, []);
+  
+  const API_URL = import.meta.env.VITE_API_URL
 
   // 🔹 Fetch Users from Backend
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/auth/all", {
+      const res = await axios.get(`${API_URL}/auth/all`, {
         withCredentials: true, // ✅ Ensure cookies are sent
       });
       setUsers(res.data.filter(user => user.role !== "admin"));
@@ -35,7 +38,7 @@ const UserManagement = () => {
 
     setDeleting(true);
     try {
-      await axios.delete(`http://localhost:5000/auth/delete/${id}`, {
+      await axios.delete(`${API_URL}/auth/delete/${id}`, {
         withCredentials: true, // ✅ Ensure cookies are sent
       });
       setUsers(users.filter(user => user.role === "user" && user._id !== id));
