@@ -17,6 +17,7 @@ import Admin from './pages/Admin.jsx';
 import useAuthStore from './Store/authStore';
 import FileUploadForm from './pages/FileUploderForm.jsx';
 import UserManagement from './pages/UserManagement.jsx';
+import ClearLocalStorage from './Components/ClearLocalStorage.jsx'
 
 
 
@@ -34,7 +35,9 @@ function App() {
         pauseOnHover 
         draggable 
       />
+      <ClearLocalStorage/>
       <Navbar />
+      
       <div className="flex flex-1 w-full">
         {/* Sidebar */}
         <div className="hidden w-full md:w-1/4 lg:w-1/5 bg-gradient-to-b from-blue-50 to-indigo-50 border-r border-gray-200 shadow-sm">
