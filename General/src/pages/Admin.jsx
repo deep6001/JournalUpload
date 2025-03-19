@@ -22,14 +22,12 @@ function Admin() {
         </h2>
         <div className='grid md:grid-cols-2 gap-6'>
           {[
-            { name: 'User Management', description: 'View, add, edit, and delete user accounts.' },
             { name: 'Content Management', description: 'Create, edit, and delete articles, blog posts, and other content.' },
           ].map((feature, index) => (
             <div key={index} className='bg-white/10 backdrop-blur-md border border-white/20 rounded-lg p-5 shadow-lg hover:shadow-xl transition duration-300 hover:bg-white/20 hover:cursor-pointer'> 
               <h3 className='font-bold text-gray-300'>{feature.name}</h3>
               <p className='text-gray-200 text-sm'>{feature.description}</p>
               {feature.name === 'Content Management' && <Link to="/fileupload" className='mt-2 block text-blue-400 hover:text-blue-500'>Go to {feature.name}</Link>}
-              {feature.name === 'User Management' && <Link to="/usermanagement" className='mt-2 block text-blue-400 hover:text-blue-500'>Go to {feature.name}</Link>}
             </div>
           ))}
         </div>

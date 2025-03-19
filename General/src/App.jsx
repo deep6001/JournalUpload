@@ -16,7 +16,6 @@ import background from './assets/background.jpg';
 import Admin from './pages/Admin.jsx';
 import useAuthStore from './Store/authStore';
 import FileUploadForm from './pages/FileUploderForm.jsx';
-import UserManagement from './pages/UserManagement.jsx';
 import ClearLocalStorage from './Components/ClearLocalStorage.jsx'
 
 
@@ -130,7 +129,6 @@ function App() {
               <Route path="/submissionguidelines" element={<SubmissionGuideLines />} />
               <Route path='/admin' element={user?.role === "admin" ? <Admin /> : <Login />} />
               <Route path='/fileupload' element={user?.role === "admin" ? <FileUploadForm /> : <Login />} />
-              <Route path='/usermanagement' element={user?.role === "admin" ? <UserManagement /> : <Login />} />
             </Routes>
           </div>
         </div>
