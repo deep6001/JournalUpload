@@ -35,7 +35,7 @@ export const loginUser = async (req, res) => {
     if (!isMatch) return res.status(400).json({ error: "Invalid email or password" });
 
     // Generate JWT token
-    const token = jwt.sign({ id: user._id, role: user.role }, SECRET_KEY, { expiresIn: "1h" });
+    const token = jwt.sign({ id: user._id, role: user.role }, SECRET_KEY, { expiresIn: "7d" });
 
     // Set token in an HTTP-only cookie
     res.cookie("token", token, {
