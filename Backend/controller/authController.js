@@ -97,3 +97,16 @@ export const getAllUsers = async (req, res) => {
     res.status(500).json({ error: "Error fetching users" });
   }
 };
+export const checkAuth = (req, res) => {
+  const token = req.cookies.token; // Get token from cookies
+  if (!token) {
+    return res.status(401).json({ message: "Unauthorized: No token" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    return res.json({ valid: true, user: decoded });
+  } catch (error) {
+    return res.status(401).json({ message: "Token expired" });
+  }
+};
