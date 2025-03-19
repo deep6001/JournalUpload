@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, Routes, Route } from "react-router-dom";
 import Navbar from "./Components/Navbar";
 import Policy from "./pages/Policy";
@@ -23,6 +23,10 @@ import ClearLocalStorage from './Components/ClearLocalStorage.jsx'
 
 function App() {
 
+  useEffect(() => {
+    <ClearLocalStorage/>
+  },[]);
+
   const {user} = useAuthStore();
   return (
     <div className="w-full min-h-screen bg-white flex flex-col">
@@ -35,7 +39,7 @@ function App() {
         pauseOnHover 
         draggable 
       />
-      <ClearLocalStorage/>
+      
       <Navbar />
       
       <div className="flex flex-1 w-full">

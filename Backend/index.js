@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use(cors(
     {
-        origin: "https://journal-upload.vercel.app",
+        origin: "https://journal-upload.vercel.app/",
         credentials: true
     }
 ));
