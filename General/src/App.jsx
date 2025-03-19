@@ -22,9 +22,7 @@ import ClearLocalStorage from './Components/ClearLocalStorage.jsx'
 
 function App() {
 
-  useEffect(() => {
-    <ClearLocalStorage/>
-  },[]);
+ 
 
   const {user} = useAuthStore();
   return (
@@ -38,7 +36,7 @@ function App() {
         pauseOnHover 
         draggable 
       />
-      
+      <ClearLocalStorage />
       <Navbar />
       
       <div className="flex flex-1 w-full">
