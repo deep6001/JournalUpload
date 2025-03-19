@@ -42,8 +42,9 @@ export const loginUser = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "Strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     });
+    
 
     res.json({ message: "Login successful", user: { id: user._id, name: user.name, email: user.email, role: user.role } });
   } catch (error) {
