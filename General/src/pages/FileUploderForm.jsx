@@ -15,9 +15,11 @@ const FileUploadForm = () => {
     fetchFiles();
   }, []);
 
+  const API_URL= import.meta.env.VITE_API_URL;
+
   const fetchFiles = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/files");
+      const res = await axios.get(`${API_URL}/api/files`);
       setUploadedFiles(res.data);
     } catch (err) {
       console.error("Error fetching files", err);
@@ -36,7 +38,7 @@ const FileUploadForm = () => {
     if (!window.confirm("Are you sure you want to delete this file?")) return;
   
     try {
-      await axios.delete(`http://localhost:5000/api/files/${id}`, {
+      await axios.delete(`${API_URL}/api/files/${id}`, {
         withCredentials: true,
       });
       setUploadedFiles(uploadedFiles.filter((file) => file._id !== id));
@@ -63,7 +65,7 @@ const FileUploadForm = () => {
     formData.append("file", file);
 
     try {
-      await axios.post("http://localhost:5000/api/files/upload", formData, {
+      await axios.post(`${API_URL}/api/files/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setTitle("");
