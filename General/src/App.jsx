@@ -16,7 +16,7 @@ import background from './assets/background.jpg';
 import Admin from './pages/Admin.jsx';
 import useAuthStore from './Store/authStore';
 import FileUploadForm from './pages/FileUploderForm.jsx';
-import ClearLocalStorage from './Components/ClearLocalStorage.jsx'
+// import ClearLocalStorage from './Components/ClearLocalStorage.jsx'
 
 
 
@@ -36,7 +36,7 @@ function App() {
         pauseOnHover 
         draggable 
       />
-      <ClearLocalStorage />
+      {/* <ClearLocalStorage /> */}
       <Navbar />
       
       <div className="flex flex-1 w-full">
