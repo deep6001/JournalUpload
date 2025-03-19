@@ -18,10 +18,7 @@ const CheckAuth = () => {
         navigate("/login"); // Redirect user to login
       }
     }
-    else{
-        localStorage.clear();
-        navigate('/login');
-    }
+   
   }, [navigate]);
 
   return null;
