@@ -4,20 +4,35 @@ import cloudinary from "../utils/cloudnary.js";
 // 🔹 Upload File to Cloudinary & Save to Database
 export const uploadFile = async (req, res) => {
   try {
-    if (!req.file) return res.status(400).json({ message: "No file uploaded" });
+    if (!req.files || !req.files.image || !req.files.pdf) {
+      return res.status(400).json({ message: "Image and PDF are required" });
+    }
 
     const { title, description } = req.body;
 
-    // Save File Data to Database
+    // Upload Image to Cloudinary
+    const imageUpload = await cloudinary.uploader.upload(req.files.image[0].path, {
+      folder: "images",
+      resource_type: "image",
+    });
+
+    // Upload PDF to Cloudinary
+    const pdfUpload = await cloudinary.uploader.upload(req.files.pdf[0].path, {
+      folder: "pdfs",
+      resource_type: "raw",
+      format: "pdf",
+    });
+
+    // Save Both Image and PDF URLs to Database
     const newFile = new File({
       title,
       description,
-      filePath: req.file.path, // Cloudinary URL
-      fileType: req.file.mimetype,
+      imagePath: imageUpload.secure_url,
+      pdfPath: pdfUpload.secure_url,
     });
 
     await newFile.save();
-    res.status(201).json({ message: "File uploaded successfully", file: newFile });
+    res.status(201).json({ message: "Files uploaded successfully", file: newFile });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "File upload failed" });
