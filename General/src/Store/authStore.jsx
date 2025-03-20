@@ -6,7 +6,7 @@ import "react-toastify/dist/ReactToastify.css"; // Import Toastify styles
 const API_URL = import.meta.env.VITE_API_URL
 
 const useAuthStore = create((set) => ({
-  user: JSON.parse(localStorage.getItem("user")) || null,
+  user:'',
 
   login: async (email, password) => {
     try {
