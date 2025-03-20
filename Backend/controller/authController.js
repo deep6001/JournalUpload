@@ -38,7 +38,7 @@ export const loginUser = async (req, res) => {
     const token = jwt.sign({ id: user._id, role: user.role }, SECRET_KEY, { expiresIn: "7d" });
 
     // Set token in an HTTP-only cookie
-    res.cookie(`token_${user._id}`, token, {
+    res.cookie(`token1_${user._id}`, token, {
       httpOnly: true,
       secure: true,
       sameSite: "None",
