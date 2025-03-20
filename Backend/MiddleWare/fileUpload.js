@@ -2,29 +2,21 @@ import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import cloudinary from "../utils/cloudnary.js";
 
-// Cloudinary Storage Setup for Images
-const imageStorage = new CloudinaryStorage({
+// Cloudinary Storage Setup
+const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
-  params: {
-    folder: "images",
-    resource_type: "image",
-  },
-});
+  params: async (req, file) => {
+    const isPDF = file.mimetype === "application/pdf";
 
-// Cloudinary Storage Setup for PDFs
-const pdfStorage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: "pdfs",
-    resource_type: "raw",
-    format: "pdf",
+    return {
+      folder: "uploads", // Folder in Cloudinary
+      resource_type: isPDF ? "raw" : "auto", // ✅ Ensures PDFs are treated correctly
+      format: isPDF ? "pdf" : undefined, // ✅ Keeps PDF format
+    };
   },
 });
 
 // Multer Upload Middleware
-const upload = multer({
-  storage: multer.diskStorage({}), // Temporary disk storage
-});
+const upload = multer({ storage });
 
-export const imageUpload = multer({ storage: imageStorage }).single("image");
-export const pdfUpload = multer({ storage: pdfStorage }).single("pdf");
+export default upload;

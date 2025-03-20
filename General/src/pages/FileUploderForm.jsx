@@ -4,20 +4,19 @@ import axios from "axios";
 const FileUploadForm = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [image, setImage] = useState(null);
-  const [pdf, setPdf] = useState(null);
+  const [file, setFile] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [preview, setPreview] = useState(null);
 
-  const API_URL = import.meta.env.VITE_API_URL;
-
+  // Fetch uploaded files
   useEffect(() => {
     fetchFiles();
   }, []);
 
-  // Fetch uploaded files
+  const API_URL= import.meta.env.VITE_API_URL;
+
   const fetchFiles = async () => {
     try {
       const res = await axios.get(`${API_URL}/api/files`);
@@ -27,27 +26,17 @@ const FileUploadForm = () => {
     }
   };
 
-  // Handle Image Change
-  const handleImageChange = (e) => {
-    const selectedImage = e.target.files[0];
-    if (selectedImage) {
-      setImage(selectedImage);
-      setPreview(URL.createObjectURL(selectedImage));
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setPreview(URL.createObjectURL(selectedFile));
     }
   };
 
-  // Handle PDF Change
-  const handlePdfChange = (e) => {
-    const selectedPdf = e.target.files[0];
-    if (selectedPdf) {
-      setPdf(selectedPdf);
-    }
-  };
-
-  // Delete File Record
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this file?")) return;
-
+  
     try {
       await axios.delete(`${API_URL}/api/files/${id}`, {
         withCredentials: true,
@@ -58,12 +47,12 @@ const FileUploadForm = () => {
       console.error(err);
     }
   };
+  
 
-  // Handle Form Submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!title || !image || !pdf) {
-      setError("Title, Image, and PDF are required");
+    if (!title || !file) {
+      setError("Title and File are required");
       return;
     }
 
@@ -73,8 +62,7 @@ const FileUploadForm = () => {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
-    formData.append("image", image);
-    formData.append("pdf", pdf);
+    formData.append("file", file);
 
     try {
       await axios.post(`${API_URL}/api/files/upload`, formData, {
@@ -82,10 +70,9 @@ const FileUploadForm = () => {
       });
       setTitle("");
       setDescription("");
-      setImage(null);
-      setPdf(null);
+      setFile(null);
       setPreview(null);
-      fetchFiles();
+      fetchFiles(); // Refresh file list
     } catch (err) {
       setError("File upload failed. Try again.");
       console.error(err);
@@ -95,8 +82,8 @@ const FileUploadForm = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6 bg-gray-900/50 backdrop-blur-md border border-gray-700 rounded-lg shadow-lg text-white">
-      <h2 className="text-2xl font-bold text-white mb-4">Upload Image & PDF</h2>
+    <div className="max-w-2xl mx-auto mt-10 p-6 bg-gray-900/50 backdrop-blur-md border border-gray-700 rounded-lg shadow-lg text-white ">
+      <h2 className="text-2xl font-bold text-white mb-4">Upload File</h2>
 
       {/* File Upload Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -120,39 +107,28 @@ const FileUploadForm = () => {
           />
         </div>
 
-        {/* Image Upload */}
         <div>
-          <label className="block text-gray-300">Upload Image</label>
+          <label className="block text-gray-300">Upload File</label>
           <input
             type="file"
-            accept="image/*"
-            onChange={handleImageChange}
+            onChange={handleFileChange}
             className="w-full p-2 rounded bg-gray-800 border border-gray-600 text-white"
             required
           />
         </div>
 
-        {/* PDF Upload */}
-        <div>
-          <label className="block text-gray-300">Upload PDF</label>
-          <input
-            type="file"
-            accept="application/pdf"
-            onChange={handlePdfChange}
-            className="w-full p-2 rounded bg-gray-800 border border-gray-600 text-white"
-            required
-          />
-        </div>
-
-        {/* Preview Image */}
         {preview && (
           <div className="mt-2">
-            <p className="text-gray-300">Image Preview:</p>
-            <img
-              src={preview}
-              alt="Preview"
-              className="w-32 h-32 object-cover rounded"
-            />
+            <p className="text-gray-300">Preview:</p>
+            {file.type.startsWith("image") ? (
+              <img
+                src={preview}
+                alt="Preview"
+                className="w-32 h-32 object-cover rounded"
+              />
+            ) : (
+              <p className="text-gray-400">{file.name}</p>
+            )}
           </div>
         )}
 
@@ -163,7 +139,7 @@ const FileUploadForm = () => {
           className="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
           disabled={loading}
         >
-          {loading ? "Uploading..." : "Upload Files"}
+          {loading ? "Uploading..." : "Upload File"}
         </button>
       </form>
 
@@ -183,28 +159,13 @@ const FileUploadForm = () => {
               >
                 {/* File Details */}
                 <div className="flex-1">
-                  <p className="text-lg font-semibold text-white">{file.title}</p>
+                  <p className="text-lg font-semibold text-white">
+                    {file.title}
+                  </p>
+                 
 
-                  {/* Image Preview */}
-                  {file.imagePath && (
-                    <img
-                      src={file.imagePath}
-                      alt="Uploaded"
-                      className="w-32 h-32 object-cover rounded mt-2"
-                    />
-                  )}
-
-                  {/* PDF Download */}
-                  {file.pdfPath && (
-                    <a
-                      href={file.pdfPath}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block text-blue-400 hover:underline mt-2"
-                    >
-                      View PDF
-                    </a>
-                  )}
+                  {/* View File Button */}
+                  <img src={file.filePath} alt="image"  className="w-32 h-32 object-cover"/>
                 </div>
 
                 {/* Delete Button */}
