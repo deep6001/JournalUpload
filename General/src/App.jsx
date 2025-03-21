@@ -22,7 +22,11 @@ import FileUploadForm from './pages/FileUploderForm.jsx';
 
 function App() {
 
- 
+  const { fetchUser } = useAuthStore();
+
+ useEffect(() => {
+    fetchUser();
+  }, []);
 
   const {user} = useAuthStore();
   return (
