@@ -119,7 +119,7 @@ const Home = () => {
       </div>
 
       {/* Featured Articles */}
-      <div>
+      {/* <div>
         <h2 className="text-xl font-serif font-bold text-blue-300 mb-4">
           Featured Articles
         </h2>
@@ -151,7 +151,7 @@ const Home = () => {
             </p>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* About the Journal */}
       <div>
