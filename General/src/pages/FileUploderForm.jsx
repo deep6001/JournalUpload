@@ -108,7 +108,7 @@ const FileUploadForm = () => {
         </div>
 
         <div>
-          <label className="block text-gray-300">Upload File</label>
+          <label className="block text-gray-300">Upload Image</label>
           <input
             type="file"
             onChange={handleFileChange}
@@ -116,6 +116,7 @@ const FileUploadForm = () => {
             required
           />
         </div>
+        
 
         {preview && (
           <div className="mt-2">

@@ -42,7 +42,6 @@ export const loginUser = async (req, res) => {
       httpOnly: true,
       secure: true,
       sameSite: "None",
-      domain: "journal-upload.vercel.app",
       path: "/",  // ✅ Ensures cookies work on all routes
       maxAge: 7 * 24 * 60 * 60 * 1000, // 30 days
     });
