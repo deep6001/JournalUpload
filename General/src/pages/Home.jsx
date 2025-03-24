@@ -58,7 +58,7 @@ const Home = () => {
                 className="flex flex-col md:flex-row items-center bg-white/10 backdrop-blur-md p-6 rounded-lg border border-white/20 mb-6"
               >
                 {/* Image or Dummy Image (Left Side) */}
-                {issue.fileType.startsWith("image/") ? (
+                {issue.fileType.startsWith("image") ? (
                   <img
                     src={issue.filePath}
                     alt="Current Issue"
