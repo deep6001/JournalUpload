@@ -76,6 +76,7 @@ const FileUploadForm = () => {
     formData.append("description", description);
     if (imageFile) formData.append("image", imageFile);
     if (pdfFile) formData.append("pdf", pdfFile);
+    console.log(formData);
 
     try {
       await axios.post(`${API_URL}/api/files/upload`, formData, {
