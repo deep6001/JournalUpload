@@ -4,14 +4,7 @@ import { uploadFile, getFiles, getFile, deleteFileRecord, getCurrentIssue } from
 
 const router = express.Router();
 
-router.post(
-    "/upload",
-    upload.fields([
-      { name: "image", maxCount: 1 },
-      { name: "pdf", maxCount: 1 }
-    ]),
-    uploadFile
-  );
+router.post("/upload", upload.single("file"), uploadFile);
 router.get("/", getFiles);
 router.get("/:id", getFile);
 router.delete("/:id", deleteFileRecord);
