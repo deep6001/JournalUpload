@@ -49,7 +49,7 @@ function Navbar() {
   const navLinks = [
     { to: "/", label: "Home", icon: <BookOpen className="w-5 h-5" /> },
     { to: "/editorial", label: "Editorial Board", icon: <Users className="w-5 h-5" /> },
-    { to: "/policy", label: "Public Policy", icon: <FileText className="w-5 h-5" /> },
+    { to: "/policy", label: "Policy", icon: <FileText className="w-5 h-5" /> },
     { to: "/submissionguidelines", label: "Submission Guidelines", icon: <FileCheck className="w-5 h-5" /> },
     { to: "/reviewPolicy", label: "Review Policy", icon: <Bookmark className="w-5 h-5" /> },
     { to: "/format", label: "Formatting Guidelines", icon: <ListOrdered className="w-5 h-5" /> },
