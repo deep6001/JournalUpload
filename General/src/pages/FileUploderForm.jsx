@@ -68,6 +68,7 @@ const FileUploadForm = () => {
       await axios.post(`${API_URL}/api/files/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
+      console.log(formData);
       setTitle("");
       setDescription("");
       setFile(null);
