@@ -67,7 +67,7 @@ function Navbar() {
             </div>
             <div>
               <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-700 to-indigo-800 bg-clip-text text-transparent">IJLPS</h1>
-              <p className="text-xs text-gray-500 -mt-1">International Journal of Law & Policy Studies</p>
+              <p className="text-xs text-gray-500 -mt-1">International Journal of Law & Public Policy Studies</p>
             </div>
           </Link>
 
