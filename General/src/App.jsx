@@ -139,7 +139,7 @@ function App() {
       {/* Footer */}
       <footer className=" bg-gray-50 border-t border-gray-200 py-6 px-6 text-center text-gray-500 text-sm">
         <p>© {new Date().getFullYear()} Academic Journal. All rights reserved.</p>
-        <p className="mt-1">Contact: journal@example.com</p>
+        <p className="mt-1">Contact: ijlpsresearch@gmail.com</p>
       </footer>
     </div>
   );
