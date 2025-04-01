@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import logo from "../assets/Logo.png";
 import {
   LogIn,
   UserPlus,
@@ -63,7 +64,7 @@ function Navbar() {
           {/* Logo & Brand */}
           <Link to="/" className="flex items-center gap-3 group">
             <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-2.5 rounded-lg shadow-md transition-all duration-300 group-hover:shadow-indigo-200 group-hover:shadow-lg">
-              <BookOpen className="w-6 h-6 text-white" />
+              <img src={logo} className="w-6 h-6" alt="Logo" />
             </div>
             <div>
               <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-700 to-indigo-800 bg-clip-text text-transparent">IJLPS</h1>
