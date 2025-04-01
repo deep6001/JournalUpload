@@ -64,7 +64,7 @@ function Navbar() {
           {/* Logo & Brand */}
           <Link to="/" className="flex items-center gap-3 group">
             <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-2.5 rounded-lg shadow-md transition-all duration-300 group-hover:shadow-indigo-200 group-hover:shadow-lg">
-              <img src={logo} className="w-full h-full" alt="Logo" />
+              <img src={logo} className="w-10 h-10" alt="Logo" />
             </div>
             <div>
               <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-700 to-indigo-800 bg-clip-text text-transparent">IJLPS</h1>
