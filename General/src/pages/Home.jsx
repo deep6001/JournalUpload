@@ -1,174 +1,157 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense, lazy } from "react";
 import axios from "axios";
-import { Document, Page, pdfjs } from "react-pdf";
 import Noimage from "../assets/image.png";
+import { ArrowRight } from "lucide-react";
 
-// Load worker for PDF rendering
-pdfjs.GlobalWorkerOptions.workerSrc =
-  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.worker.min.mjs";
+const SkeletonLoader = () => (
+  <div className="flex flex-col md:flex-row items-center bg-white/10 backdrop-blur-md p-6 rounded-lg border border-white/20 mb-6 animate-pulse">
+    <div className="w-full md:w-1/3 h-48 bg-gray-700 rounded-lg"></div>
+    <div className="md:ml-6 flex-1">
+      <div className="h-6 bg-gray-700 w-3/4 mb-3 rounded"></div>
+      <div className="h-4 bg-gray-700 w-full mb-2 rounded"></div>
+      <div className="h-4 bg-gray-700 w-5/6 mb-4 rounded"></div>
+      <div className="h-4 bg-gray-700 w-1/2 mb-2 rounded"></div>
+      <div className="h-10 bg-gray-700 w-32 rounded"></div>
+    </div>
+  </div>
+);
+
 const Home = () => {
-  const [currentIssue, setCurrentIssue] = useState(null);
+  const [currentIssues, setCurrentIssues] = useState([]);
+  const [filteredIssues, setFilteredIssues] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
-  const [numPages, setNumPages] = useState(null);
-
-  // PDF load success handler
-  const onDocumentLoadSuccess = ({ numPages }) => {
-    setNumPages(numPages);
-  };
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedMonth, setSelectedMonth] = useState(""); // Store selected month
+  const issuesPerPage = 5;
 
   useEffect(() => {
-    const scrollElement = document.scrollingElement || document.documentElement;
-    scrollElement.scrollTo({ top: 0, behavior: "smooth" });
-
-    fetchCurrentIssue();
+    document.scrollingElement?.scrollTo({ top: 0, behavior: "smooth" });
+    fetchCurrentIssues();
   }, []);
 
   const API_URL = import.meta.env.VITE_API_URL;
 
-  // 🔹 Fetch Current Issue from Backend
-  const fetchCurrentIssue = async () => {
+  const fetchCurrentIssues = async () => {
     try {
       const res = await axios.get(`${API_URL}/api/files`);
-      setCurrentIssue(res.data);
+      setCurrentIssues(res.data);
+      setFilteredIssues(res.data); // Initially, show all issues
     } catch (err) {
-      setError("Failed to load the current issue.");
+      setError("Failed to load the current issues.");
       console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
+  // Handle Month Filter
+  const handleMonthChange = (event) => {
+    const selectedDate = event.target.value; // Format: YYYY-MM
+    setSelectedMonth(selectedDate);
+
+    if (!selectedDate) {
+      setFilteredIssues(currentIssues);
+      return;
+    }
+
+    const [year, month] = selectedDate.split("-");
+
+    // Filter issues by selected month and year
+    const filtered = currentIssues.filter((issue) => {
+      const issueDate = new Date(issue.uploadDate);
+      return (
+        issueDate.getFullYear().toString() === year &&
+        (issueDate.getMonth() + 1).toString().padStart(2, "0") === month
+      );
+    });
+
+    setFilteredIssues(filtered);
+    setCurrentPage(1); // Reset to first page after filtering
+  };
+
+  const indexOfLastIssue = currentPage * issuesPerPage;
+  const indexOfFirstIssue = indexOfLastIssue - issuesPerPage;
+  const currentPageIssues = filteredIssues.slice(indexOfFirstIssue, indexOfLastIssue);
+  const totalPages = Math.ceil(filteredIssues.length / issuesPerPage);
+
   return (
-    <div className="space-y-8 p-6 bg-gray-900/50 backdrop-blur-lg border border-white/20 rounded-lg shadow-[0_8px_32px_0_rgba(31,38,135,0.55)] text-white">
-      {/* Main Heading */}
+    <div className="space-y-8 p-6 bg-gray-900/50 backdrop-blur-lg border border-white/20 rounded-lg shadow-lg text-white">
       <div>
         <h1 className="text-3xl font-serif font-bold text-white mb-4">
           Journal of Academic Research
         </h1>
         <p className="text-lg text-gray-200 leading-relaxed">
-          Welcome to the Journal of Academic Research, a peer-reviewed
-          publication dedicated to advancing knowledge across multiple
-          disciplines. Our journal publishes original research, reviews, and
-          scholarly articles that contribute to the academic community.
+          Welcome to the Journal of Academic Research, a peer-reviewed publication dedicated to advancing knowledge across multiple disciplines.
         </p>
       </div>
 
-      {/* Current Issue */}
+      {/* Date Filter */}
+      <div className="flex items-center gap-4">
+        <label className="text-white">Filter by Month:</label>
+        <input
+          type="month"
+          value={selectedMonth}
+          onChange={handleMonthChange}
+          className="bg-gray-800 text-white p-2 rounded-md border border-white/20"
+        />
+      </div>
+
       <div className="bg-white/10 backdrop-blur-md p-6 rounded-lg border border-white/20">
         {loading ? (
-          <p className="text-gray-300">Loading current issue...</p>
+          Array.from({ length: issuesPerPage }).map((_, index) => <SkeletonLoader key={index} />)
         ) : error ? (
           <p className="text-red-400">{error}</p>
-        ) : currentIssue ? (
-          <>
-            {currentIssue.map((issue) => (
-              <div
-                key={issue._id}
-                className="flex flex-col md:flex-row items-center bg-white/10 backdrop-blur-md p-6 rounded-lg border border-white/20 mb-6"
-              >
-                {/* PDF First Page Preview or Dummy Image */}
-                {issue.fileType === "application/pdf" ? (
-                  <div className="w-full md:w-1/3 h-48 overflow-hidden border border-white/10 mb-4 md:mb-0">
-                    <Document
-                      file={issue.filePath}
-                      onLoadSuccess={onDocumentLoadSuccess}
-                      onLoadError={(error) =>
-                        console.error("PDF Load Error:", error)
-                      }
-                      loading={<div className="text-white">Loading PDF...</div>}
-                      error={
-                        <div className="text-red-500">Failed to load PDF</div>
-                      }
-                    >
-                      <Page
-                        pageNumber={1}
-                        width={200}
-                        renderTextLayer={false}
-                        renderAnnotationLayer={false}
-                        loading={
-                          <div className="text-white">Loading page...</div>
-                        }
-                      />
-                    </Document>
-                  </div>
-                ) : /* ... rest of the image handling */
-                issue.fileType.startsWith("image/") ? (
-                  <img
-                    src={issue.filePath}
-                    alt="Current Issue"
-                    className="w-full md:w-1/3 h-48 object-cover rounded-lg border border-white/10 mb-4 md:mb-0"
-                  />
-                ) : (
-                  <img
-                    src={Noimage} // ✅ Dummy image for non-image, non-PDF files
-                    alt="File Not Available"
-                    className="w-full md:w-1/3 h-48 object-cover rounded-lg border border-white/10 mb-4 md:mb-0"
-                  />
-                )}
-
-                {/* Content (Right Side) */}
+        ) : currentPageIssues.length > 0 ? (
+          <Suspense fallback={<SkeletonLoader />}>
+            {currentPageIssues.map((issue) => (
+              <div key={issue._id} className="flex flex-col md:flex-row items-center bg-white/10 backdrop-blur-md p-6 rounded-lg border border-white/20 mb-6">
+                <img
+                  src={issue.coverImage || Noimage}
+                  alt="Current Issue"
+                  loading="lazy"
+                  className="w-full md:w-1/3 h-48 object-cover rounded-lg border border-white/10 mb-4 md:mb-0"
+                />
                 <div className="md:ml-6 flex-1">
-                  {/* Title */}
-                  <h2 className="text-xl font-serif font-bold text-blue-300 mb-3">
-                    {issue.title}
-                  </h2>
-
-                  {/* Description */}
+                  <h2 className="text-xl font-serif font-bold text-blue-300 mb-3">{issue.title}</h2>
                   <p className="text-gray-300 mb-4">{issue.description}</p>
-
-                  {/* Publish Date (Formatted) */}
                   <p className="text-sm text-gray-400 mb-2">
-                    Published on:{" "}
-                    {new Date(issue.uploadedAt).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
+                    Published on: {new Date(issue.uploadDate).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
                   </p>
-
-                  {/* Buttons */}
-                  <div className="flex gap-4 mt-4">
-                    <a
-                      href={issue.filePath}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors">
-                        View PDF
-                      </button>
-                    </a>
-                    <button className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors">
-                      Contact Us
-                    </button>
-                  </div>
+                  <a
+                    href={issue.pdf}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
+                  >
+                    View Issue <ArrowRight size={20} />
+                  </a>
                 </div>
               </div>
             ))}
-          </>
+          </Suspense>
         ) : (
-          <p className="text-gray-300">No current issue available.</p>
+          <p className="text-gray-300">No issues available for the selected month.</p>
         )}
-      </div>
-
-      {/* About the Journal */}
-      <div>
-        <h2 className="text-xl font-serif font-bold text-blue-300 mb-4">
-          About the Journal
-        </h2>
-        <p className="text-gray-300 mb-4">
-          The Journal of Academic Research is committed to publishing
-          high-quality research that contributes to the advancement of
-          knowledge. Our rigorous peer-review process ensures that all published
-          articles meet the highest standards of academic integrity and
-          scientific merit.
-        </p>
-        <p className="text-gray-300">
-          We welcome submissions from researchers across all disciplines. Please
-          review our submission guidelines for more information on how to submit
-          your work for consideration.
-        </p>
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-4 mt-6">
+            <button
+              className="px-4 py-2 bg-gray-700 rounded-lg text-white hover:bg-gray-600 disabled:opacity-50"
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+            <span className="text-gray-300">Page {currentPage} of {totalPages}</span>
+            <button
+              className="px-4 py-2 bg-gray-700 rounded-lg text-white hover:bg-gray-600 disabled:opacity-50"
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
